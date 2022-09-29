@@ -5,6 +5,7 @@
 class CircleEntity : public Entity {
 public:
 	sf::CircleShape m_shape;
-
-	CircleEntity(const sf::Vector2f& pos);
+	
+	CircleEntity(float radius, const sf::Vector2f& pos);
+	void Move(float delta_time);
 };
