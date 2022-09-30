@@ -6,7 +6,7 @@
 
 static const int WINDOW_HEIGHT = 400;
 static const int WINDOW_WIDTH = 600;
-static const float BALL_SIZE = 10.0f;
+static const float BALL_RADIUS = 10.0f;
 static const float PI = 3.1415f;
 
 float getMagnitude(const sf::Vector2f& a) {
@@ -30,24 +30,15 @@ bool collided(const sf::Shape& first_obj, const sf::Shape& second_obj) {
 	return first_obj.getGlobalBounds().intersects(second_obj.getGlobalBounds());
 }
 
-std::ostream& operator<<(std::ostream& stream, sf::Vector2f& vect) {
-	return stream << "x: " << vect.x << ", y: " << vect.y << std::endl;
-}
-
-sf::Vector2f operator*(sf::Vector2f& vector, float val) {
-	return sf::Vector2f(vector.x * val, vector.y * val);
-}
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32U), "Breakout Clone");
 
 	RectangleEntity player_entity(sf::Vector2f(WINDOW_WIDTH / 4, 10), sf::Vector2f((WINDOW_WIDTH / 2) - 10, WINDOW_HEIGHT - 20));
 
-	RectangleEntity ball(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f((WINDOW_WIDTH / 2) - BALL_SIZE, (WINDOW_HEIGHT / 2) - BALL_SIZE));
+	CircleEntity ball(BALL_RADIUS, sf::Vector2f((WINDOW_WIDTH / 2) - BALL_RADIUS, (WINDOW_HEIGHT / 2) - BALL_RADIUS));
 
 	ball.m_shape.setFillColor(sf::Color::Red);
-	ball.m_speed = 0.2f;
-	ball.m_direction.x = -1;
 
 	RectangleEntity rightWall(sf::Vector2f(1, WINDOW_HEIGHT), sf::Vector2f(WINDOW_WIDTH - 1, 1));
 	rightWall.m_shape.setFillColor(sf::Color::White);
@@ -60,20 +51,18 @@ int main() {
 	ceiling.m_direction = sf::Vector2f(1, 0);
 	ceiling.m_shape.setFillColor(sf::Color::White);
 
-	sf::Vector2f last_position_for_backtracking = ball.m_shape.getPosition();
-
 	while (window.isOpen()) {
 		sf::Event event;
 
 		while (window.pollEvent(event)) {
 			if (event.key.code == sf::Keyboard::Key::Left) {
 				player_entity.m_direction.x = -1;
-				player_entity.m_shape.move(sf::Vector2f(player_entity.m_direction.x * player_entity.m_speed, 0));
+				player_entity.m_shape.move(player_entity.m_direction.x * player_entity.m_speed, 0);
 			}
 			
 			if (event.key.code == sf::Keyboard::Key::Right) {
 				player_entity.m_direction.x = 1;
-				player_entity.m_shape.move(sf::Vector2f(player_entity.m_direction.x * player_entity.m_speed, 0));
+				player_entity.m_shape.move(player_entity.m_direction.x * player_entity.m_speed, 0);
 			}
 
 			if (event.key.code == sf::Keyboard::Key::Escape || event.type == sf::Event::Closed) {
@@ -98,8 +87,6 @@ int main() {
 			ball.m_shape.move(ball.getVelocity() * -1.0f);
 			ball.m_direction = getNormalizedVectorFromDirection(angle);
 		}
-
-		std::cout << ball.m_direction;
 
 		ball.m_shape.move(ball.getVelocity());
 
