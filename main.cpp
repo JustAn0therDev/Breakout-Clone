@@ -33,6 +33,10 @@ float getAngleBetweenTwoVectors(const sf::Vector2f& a, const sf::Vector2f& b) {
 	return (acos(times / (a_mag * b_mag)) * 180) / PI;
 }
 
+sf::Vector2f getNormalizedVectorFromDirection(const float angle) {
+	return sf::Vector2f(cos(angle), sin(angle));
+}
+
 bool collided(const sf::Shape& first_obj, const sf::Shape& second_obj) {
 	return first_obj.getGlobalBounds().intersects(second_obj.getGlobalBounds());
 }
@@ -78,32 +82,31 @@ int main() {
 			}
 		}
 
-		ball.m_shape.move(ball.getVelocity());
-
 		if (collided(ball.m_shape, rightWall.m_shape)) {
 			float angle = getAngleBetweenTwoVectors(ball.m_direction, rightWall.m_direction);
 			std::cout << "Resulting angle from collision: " << angle << std::endl;
-			ball.m_direction = sf::Vector2f(cos(angle), sin(angle));
-			ball.m_shape.move(ball.getVelocity());
+			ball.m_direction = getNormalizedVectorFromDirection(angle);
 		}
-		else if (collided(ball.m_shape, leftWall.m_shape)) {
+		
+		if (collided(ball.m_shape, leftWall.m_shape)) {
 			float angle = getAngleBetweenTwoVectors(ball.m_direction, leftWall.m_direction);
 			std::cout << "Resulting angle from collision: " << angle << std::endl;
-			ball.m_direction = sf::Vector2f(cos(angle), sin(angle));
-			ball.m_shape.move(ball.getVelocity());
+			ball.m_direction = getNormalizedVectorFromDirection(angle);
 		}
-		else if (collided(ball.m_shape, player_entity.m_shape)) {
+		
+		if (collided(ball.m_shape, player_entity.m_shape)) {
 			float angle = getAngleBetweenTwoVectors(ball.m_direction, player_entity.m_direction);
 			std::cout << "Resulting angle from collision: " << angle << std::endl;
-			ball.m_direction = sf::Vector2f(cos(angle), sin(angle));
-			ball.m_shape.move(ball.getVelocity());
+			ball.m_direction = getNormalizedVectorFromDirection(angle);
 		}
-		else if (collided(ball.m_shape, ceiling.m_shape)) {
+		
+		if (collided(ball.m_shape, ceiling.m_shape)) {
 			float angle = getAngleBetweenTwoVectors(ball.m_direction, ceiling.m_direction);
 			std::cout << "Resulting angle from collision: " << angle << std::endl;
-			ball.m_direction = sf::Vector2f(cos(angle), sin(angle));
-			ball.m_shape.move(ball.getVelocity());
+			ball.m_direction = getNormalizedVectorFromDirection(angle);
 		}
+
+		ball.m_shape.move(ball.getVelocity());
 
 		window.clear();
 
