@@ -6,9 +6,5 @@ RectangleEntity::RectangleEntity(const sf::Vector2f& size, const sf::Vector2f& p
 	m_shape.setSize(size);
 	m_shape.setPosition(pos);
 
-	m_speed = 15.0f;
-}
-
-void RectangleEntity::Move(float delta_time) {
-	m_shape.move(m_direction * m_speed * delta_time);
+	m_speed = 20.0f;
 }

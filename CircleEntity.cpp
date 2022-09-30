@@ -9,9 +9,6 @@ CircleEntity::CircleEntity(float radius, const sf::Vector2f& pos) {
 	m_shape.setRadius(radius);
 	m_shape.setPosition(pos);
 
-	m_speed = 0.05f;
+	m_speed = 0.25f;
 }
 
-void CircleEntity::Move(float delta_time) {
-	m_shape.move(m_direction * m_speed * delta_time);
-}
