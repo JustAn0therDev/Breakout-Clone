@@ -3,8 +3,6 @@
 #include "CircleEntity.hpp"
 #include "RectangleEntity.hpp"
 #include <cmath>
-#include <windows.h>
-#include <profileapi.h>
 
 static const int WINDOW_HEIGHT = 400;
 static const int WINDOW_WIDTH = 600;
@@ -36,6 +34,10 @@ std::ostream& operator<<(std::ostream& stream, sf::Vector2f& vect) {
 	return stream << "x: " << vect.x << ", y: " << vect.y << std::endl;
 }
 
+sf::Vector2f operator*(sf::Vector2f& vector, float val) {
+	return sf::Vector2f(vector.x * val, vector.y * val);
+}
+
 int main() {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32U), "Breakout Clone");
 
@@ -44,7 +46,6 @@ int main() {
 	RectangleEntity ball(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f((WINDOW_WIDTH / 2) - BALL_SIZE, (WINDOW_HEIGHT / 2) - BALL_SIZE));
 
 	ball.m_shape.setFillColor(sf::Color::Red);
-	ball.m_shape.setOrigin(BALL_SIZE, BALL_SIZE);
 	ball.m_speed = 0.2f;
 	ball.m_direction.x = -1;
 
@@ -82,27 +83,25 @@ int main() {
 
 		if (collided(ball.m_shape, rightWall.m_shape)) {
 			float angle = getAngleBetweenTwoVectors(ball.m_direction, rightWall.m_direction);
+			ball.m_shape.move(ball.getVelocity() * -1.0f);
 			ball.m_direction = getNormalizedVectorFromDirection(angle);
-			ball.m_shape.setPosition(last_position_for_backtracking);
 		} else if (collided(ball.m_shape, leftWall.m_shape)) {
 			float angle = getAngleBetweenTwoVectors(ball.m_direction, leftWall.m_direction);
+			ball.m_shape.move(ball.getVelocity() * -1.0f);
 			ball.m_direction = getNormalizedVectorFromDirection(angle);
-			ball.m_shape.setPosition(last_position_for_backtracking);
 		} else if (collided(ball.m_shape, player_entity.m_shape)) {
 			float angle = getAngleBetweenTwoVectors(ball.m_direction, player_entity.m_direction);
+			ball.m_shape.move(ball.getVelocity() * -1.0f);
 			ball.m_direction = getNormalizedVectorFromDirection(angle);
-			ball.m_shape.setPosition(last_position_for_backtracking);
 		} else if (collided(ball.m_shape, ceiling.m_shape)) {
 			float angle = getAngleBetweenTwoVectors(ball.m_direction, ceiling.m_direction);
+			ball.m_shape.move(ball.getVelocity() * -1.0f);
 			ball.m_direction = getNormalizedVectorFromDirection(angle);
-			ball.m_shape.setPosition(last_position_for_backtracking);
 		}
 
 		std::cout << ball.m_direction;
 
 		ball.m_shape.move(ball.getVelocity());
-
-		last_position_for_backtracking = ball.m_shape.getPosition();
 
 		window.clear();
 
