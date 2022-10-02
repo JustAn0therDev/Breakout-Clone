@@ -151,11 +151,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RectangleEntity.cpp" />
     <ClCompile Include="RectangleEntity.hpp" />
+    <ClCompile Include="VectorHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircleEntity.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="Geometry.hpp" />
+    <ClInclude Include="VectorHelper.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

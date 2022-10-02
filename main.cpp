@@ -8,14 +8,9 @@
 static const int WINDOW_HEIGHT = 400;
 static const int WINDOW_WIDTH = 600;
 static const float BALL_RADIUS = 10.0f;
-static const float PI = 3.1415f;
 
 bool collided(const sf::Shape& first_obj, const sf::Shape& second_obj) {
 	return first_obj.getGlobalBounds().intersects(second_obj.getGlobalBounds());
-}
-
-std::ostream& operator<<(std::ostream& stream, const sf::Vector2f& vector) {
-	return std::cout << vector.x << ", " << vector.y;
 }
 
 int main() {
