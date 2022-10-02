@@ -3,15 +3,12 @@
 #include "CircleEntity.hpp"
 #include "RectangleEntity.hpp"
 #include <cmath>
+#include "Geometry.hpp"
 
 static const int WINDOW_HEIGHT = 400;
 static const int WINDOW_WIDTH = 600;
 static const float BALL_RADIUS = 10.0f;
 static const float PI = 3.1415f;
-
-sf::Vector2f getRotated(const sf::Vector2f& vect) {
-	return sf::Vector2f(vect.y, vect.x * -1);
-}
 
 bool collided(const sf::Shape& first_obj, const sf::Shape& second_obj) {
 	return first_obj.getGlobalBounds().intersects(second_obj.getGlobalBounds());
@@ -32,13 +29,11 @@ int main() {
 
 	RectangleEntity right_wall(sf::Vector2f(1, WINDOW_HEIGHT), sf::Vector2f(WINDOW_WIDTH - 1, 1));
 	right_wall.m_shape.setFillColor(sf::Color::White);
-	right_wall.m_direction = sf::Vector2f(0, 1);
 	
 	RectangleEntity left_wall(sf::Vector2f(1, WINDOW_HEIGHT), sf::Vector2f(0, 0));
-	left_wall.m_direction = sf::Vector2f(0, 1);
+	left_wall.m_shape.setFillColor(sf::Color::White);
 
 	RectangleEntity ceiling(sf::Vector2f(WINDOW_WIDTH, 1), sf::Vector2f(0, 0));
-	ceiling.m_direction = sf::Vector2f(1, 0);
 	ceiling.m_shape.setFillColor(sf::Color::White);
 
 	while (window.isOpen()) {
@@ -64,7 +59,7 @@ int main() {
 			collided(ball.m_shape, left_wall.m_shape) || 
 			collided(ball.m_shape, player_entity.m_shape) ||
 			collided(ball.m_shape, ceiling.m_shape)) {
-			ball.m_direction = getRotated(ball.m_direction);
+			ball.m_direction = Geometry::getRotatedBy90Degrees(ball.m_direction);
 		}
 
 		ball.m_shape.move(ball.getVelocity());
