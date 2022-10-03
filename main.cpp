@@ -57,12 +57,20 @@ int main() {
 		while (window.pollEvent(event)) {
 			if (event.key.code == sf::Keyboard::Key::Left) {
 				player_entity.m_direction.x = -1;
-				player_entity.m_shape.move(player_entity.m_direction.x * player_entity.m_speed, 0);
+
+				if (player_entity.m_shape.getPosition().x > 0) {
+					player_entity.m_shape.move(player_entity.m_direction.x * player_entity.m_speed, 0);
+				}
 			}
 
 			if (event.key.code == sf::Keyboard::Key::Right) {
 				player_entity.m_direction.x = 1;
-				player_entity.m_shape.move(player_entity.m_direction.x * player_entity.m_speed, 0);
+				
+				float total_movement = player_entity.m_shape.getPosition().x + player_entity.m_shape.getSize().x;
+
+				if (total_movement < WINDOW_WIDTH) {
+					player_entity.m_shape.move(player_entity.m_direction.x * player_entity.m_speed, 0);
+				}
 			}
 
 			if (event.key.code == sf::Keyboard::Key::Escape || event.type == sf::Event::Closed) {
