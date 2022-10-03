@@ -11,6 +11,5 @@ public:
 	RectangleEntity m_rectangle_entity;
 
 	Enemy(const EnemyType& enemy_type, const sf::Vector2f& rectangle_size, const sf::Vector2f& position);
-
 	void takeDamage();
 };

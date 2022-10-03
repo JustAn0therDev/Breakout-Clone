@@ -6,6 +6,7 @@
 #include "Geometry.hpp"
 #include "Enemy.hpp"
 #include "EnemyType.hpp"
+#include "VectorHelper.hpp"
 
 static const int WINDOW_HEIGHT = 400;
 static const int WINDOW_WIDTH = 600;
@@ -47,9 +48,9 @@ int main() {
 
 	RectangleEntity ceiling(sf::Vector2f(WINDOW_WIDTH, 1), sf::Vector2f(0, 0), sf::Color::White);
 
-	std::vector<Enemy*> enemies = makeEnemies(EnemyType::Strong, 3, 10);
-	std::vector<Enemy*> middleline_enemies = makeEnemies(EnemyType::Normal, 5, 30);
-	std::vector<Enemy*> frontline_enemies = makeEnemies(EnemyType::Weak, 10, 50);
+	std::vector<Enemy*> enemies = makeEnemies(EnemyType::Strong, 5, 50);
+	std::vector<Enemy*> middleline_enemies = makeEnemies(EnemyType::Normal, 5, 70);
+	std::vector<Enemy*> frontline_enemies = makeEnemies(EnemyType::Weak, 10, 90);
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -78,46 +79,55 @@ int main() {
 			}
 		}
 
-		if (collided(ball.m_shape, right_wall.m_shape) ||
-			collided(ball.m_shape, left_wall.m_shape) ||
-			collided(ball.m_shape, player_entity.m_shape) ||
-			collided(ball.m_shape, ceiling.m_shape)) {
-			ball.m_direction = Geometry::getRotatedBy90Degrees(ball.m_direction);
+		if (collided(ball.m_shape, left_wall.m_shape) ||
+			collided(ball.m_shape, ceiling.m_shape) ||
+			collided(ball.m_shape, right_wall.m_shape) || 
+			collided(ball.m_shape, player_entity.m_shape)) {
+			ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
 		}
 
 		for (auto& enemy : enemies) {
 			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
 				enemy->takeDamage();
+				
 				if (enemy->m_health == 0) {
 					delete enemy;
 					enemy = nullptr;
 				}
 
-				ball.m_direction = Geometry::getRotatedBy90Degrees(ball.m_direction);
+				// Backtracking after collision.
+				ball.m_shape.move(Geometry::getRotatedBy180Degrees(ball.m_direction));
+				ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
 			}
 		}
 
 		for (auto& enemy : middleline_enemies) {
 			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
 				enemy->takeDamage();
+				
 				if (enemy->m_health == 0) {
 					delete enemy;
 					enemy = nullptr;
 				}
 
-				ball.m_direction = Geometry::getRotatedBy90Degrees(ball.m_direction);
+				// Backtracking after collision.
+				ball.m_shape.move(Geometry::getRotatedBy180Degrees(ball.m_direction));
+				ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
 			}
 		}
 
 		for (auto& enemy : frontline_enemies) {
 			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
 				enemy->takeDamage();
+
 				if (enemy->m_health == 0) {
 					delete enemy;
 					enemy = nullptr;
 				}
 
-				ball.m_direction = Geometry::getRotatedBy90Degrees(ball.m_direction);
+				// Backtracking after collision.
+				ball.m_shape.move(Geometry::getRotatedBy180Degrees(ball.m_direction));
+				ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
 			}
 		}
 

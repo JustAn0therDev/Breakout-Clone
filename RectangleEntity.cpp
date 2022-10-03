@@ -10,4 +10,6 @@ RectangleEntity::RectangleEntity(const sf::Vector2f& size, const sf::Vector2f& p
 	m_speed = 20.0f;
 }
 
-RectangleEntity::RectangleEntity() { }
+RectangleEntity::RectangleEntity() { 
+
+}
