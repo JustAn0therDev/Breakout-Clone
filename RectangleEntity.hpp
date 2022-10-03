@@ -6,5 +6,5 @@ class RectangleEntity : public Entity {
 public:
 	sf::RectangleShape m_shape;
 
-	RectangleEntity(const sf::Vector2f& size, const sf::Vector2f& pos);
+	RectangleEntity(const sf::Vector2f& size, const sf::Vector2f& pos, const sf::Color& color);
 };
