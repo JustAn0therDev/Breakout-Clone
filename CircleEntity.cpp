@@ -9,6 +9,6 @@ CircleEntity::CircleEntity(float radius, const sf::Vector2f& pos) {
 	m_shape.setRadius(radius);
 	m_shape.setPosition(pos);
 
-	m_speed = 0.07f;
+	m_speed = 0.1f;
 }
 

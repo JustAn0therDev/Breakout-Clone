@@ -4,25 +4,25 @@
 #include "RectangleEntity.hpp"
 #include <cmath>
 #include "Geometry.hpp"
+#include "Enemy.hpp"
+#include "EnemyType.hpp"
 
 static const int WINDOW_HEIGHT = 400;
 static const int WINDOW_WIDTH = 600;
 static const float BALL_RADIUS = 10.0f;
 
-std::vector<RectangleEntity*> makeEnemies(const float amount, const float y_pos) {
-	std::vector<RectangleEntity*> enemies;
-	enemies.reserve(amount);
+std::vector<Enemy*> makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos) {
+	std::vector<Enemy*> enemies;
+	enemies.reserve(static_cast<int>(amount));
 
-	float space_between = 10;
+	float size = (WINDOW_WIDTH / amount) - 10 * 2;
 
-	float size = (WINDOW_WIDTH / amount) - space_between * 2;
-
-	space_between = (WINDOW_WIDTH - (size * amount)) / (amount + 1);
+	float space_between = (WINDOW_WIDTH - (size * amount)) / (amount + 1);
 
 	float pos = space_between;
 
 	for (int i = 0; i < static_cast<int>(amount); i++) {
-		enemies.emplace_back(new RectangleEntity(sf::Vector2f(size, 10), sf::Vector2f(pos, y_pos), sf::Color::White));
+		enemies.emplace_back(new Enemy(enemy_type, sf::Vector2f(size, 10), sf::Vector2f(pos, y_pos)));
 		pos += size + space_between;
 	}
 
@@ -47,9 +47,9 @@ int main() {
 
 	RectangleEntity ceiling(sf::Vector2f(WINDOW_WIDTH, 1), sf::Vector2f(0, 0), sf::Color::White);
 
-	std::vector<RectangleEntity*> enemies = makeEnemies(3, 10);
-	std::vector<RectangleEntity*> middleline_enemies = makeEnemies(5, 30);
-	std::vector<RectangleEntity*> frontline_enemies = makeEnemies(10, 50);
+	std::vector<Enemy*> enemies = makeEnemies(EnemyType::Strong, 3, 10);
+	std::vector<Enemy*> middleline_enemies = makeEnemies(EnemyType::Normal, 5, 30);
+	std::vector<Enemy*> frontline_enemies = makeEnemies(EnemyType::Weak, 10, 50);
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -86,25 +86,37 @@ int main() {
 		}
 
 		for (auto& enemy : enemies) {
-			if (enemy != nullptr && collided(ball.m_shape, enemy->m_shape)) {
-				delete enemy;
-				enemy = nullptr;
+			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
+				enemy->takeDamage();
+				if (enemy->m_health == 0) {
+					delete enemy;
+					enemy = nullptr;
+				}
+
 				ball.m_direction = Geometry::getRotatedBy90Degrees(ball.m_direction);
 			}
 		}
 
 		for (auto& enemy : middleline_enemies) {
-			if (enemy != nullptr && collided(ball.m_shape, enemy->m_shape)) {
-				delete enemy;
-				enemy = nullptr;
+			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
+				enemy->takeDamage();
+				if (enemy->m_health == 0) {
+					delete enemy;
+					enemy = nullptr;
+				}
+
 				ball.m_direction = Geometry::getRotatedBy90Degrees(ball.m_direction);
 			}
 		}
 
 		for (auto& enemy : frontline_enemies) {
-			if (enemy != nullptr && collided(ball.m_shape, enemy->m_shape)) {
-				delete enemy;
-				enemy = nullptr;
+			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
+				enemy->takeDamage();
+				if (enemy->m_health == 0) {
+					delete enemy;
+					enemy = nullptr;
+				}
+
 				ball.m_direction = Geometry::getRotatedBy90Degrees(ball.m_direction);
 			}
 		}
@@ -118,19 +130,19 @@ int main() {
 
 		for (const auto& enemy : enemies) {
 			if (enemy != nullptr) {
-				window.draw(enemy->m_shape);
+				window.draw(enemy->m_rectangle_entity.m_shape);
 			}
 		}
 
 		for (const auto& enemy : middleline_enemies) {
 			if (enemy != nullptr) {
-				window.draw(enemy->m_shape);
+				window.draw(enemy->m_rectangle_entity.m_shape);
 			}
 		}
 
 		for (const auto& enemy : frontline_enemies) {
 			if (enemy != nullptr) {
-				window.draw(enemy->m_shape);
+				window.draw(enemy->m_rectangle_entity.m_shape);
 			}
 		}
 
