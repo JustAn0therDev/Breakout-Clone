@@ -12,18 +12,6 @@ static const int WINDOW_HEIGHT = 1080;
 static const int WINDOW_WIDTH = 1920;
 static const float BALL_RADIUS = 10.0f;
 
-//sf::Vector2f getBacktrackPosition(const sf::Shape& first_obj, const sf::Shape& second_obj) {
-//	sf::Vector2f first_pos = first_obj.getPosition();
-//	sf::Vector2f second_pos = second_obj.getPosition();
-//
-//	sf::FloatRect first_gb = first_obj.getGlobalBounds();
-//	sf::FloatRect second_gb = second_obj.getGlobalBounds();
-//
-//	sf::Vector2f real_bounds = sf::Vector2f(first_pos.x + first_gb.width, first_pos.y + first_gb.height);
-//
-//	return sf::Vector2f(ball.pos, );
-//}
-
 std::vector<Enemy*> makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos) {
 	std::vector<Enemy*> enemies;
 	enemies.reserve(static_cast<int>(amount));
