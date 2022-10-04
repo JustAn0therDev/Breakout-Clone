@@ -16,7 +16,11 @@ public:
 	std::vector<Enemy*> m_middlelineEnemies;
 	std::vector<Enemy*> m_backlineEnemies;
 
-	Game();
+	sf::Text m_restartText;
+	sf::Color m_restartTextColor;
+
+	Game(const sf::Font& font);
 
 	std::vector<Enemy*> makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos);
+	bool ballIsOutOfBounds();
 };

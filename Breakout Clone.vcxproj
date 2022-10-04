@@ -146,19 +146,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CircleEntity.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="Enemy.hpp" />
+    <ClInclude Include="Collider.hpp" />
+    <ClInclude Include="Enemy.hpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RectangleEntity.cpp" />
-    <ClCompile Include="RectangleEntity.hpp" />
+    <ClInclude Include="RectangleEntity.hpp" />
     <ClCompile Include="VectorHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircleEntity.hpp" />
     <ClInclude Include="EnemyType.hpp" />
     <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="Game.hpp" />
     <ClInclude Include="Geometry.hpp" />
     <ClInclude Include="VectorHelper.hpp" />
   </ItemGroup>

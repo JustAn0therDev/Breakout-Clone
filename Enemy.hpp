@@ -1,6 +1,7 @@
 #pragma once
 #include "RectangleEntity.hpp"
 #include "EnemyType.hpp"
+#include <SFML/Graphics.hpp>
 
 class Enemy {
 private:

@@ -8,46 +8,21 @@
 #include "EnemyType.hpp"
 #include "VectorHelper.hpp"
 #include "Constants.hpp"
-
-std::vector<Enemy*> makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos) {
-	std::vector<Enemy*> enemies;
-	enemies.reserve(static_cast<int>(amount));
-
-	float size = (WINDOW_WIDTH / amount) - 10 * 2;
-
-	float space_between = (WINDOW_WIDTH - (size * amount)) / (amount + 1);
-
-	float pos = space_between;
-
-	for (int i = 0; i < static_cast<int>(amount); i++) {
-		enemies.emplace_back(new Enemy(enemy_type, sf::Vector2f(size, 10), sf::Vector2f(pos, y_pos)));
-		pos += size + space_between;
-	}
-
-	return enemies;
-}
-
-bool collided(const sf::Shape& first_obj, const sf::Shape& second_obj) {
-	return first_obj.getGlobalBounds().intersects(second_obj.getGlobalBounds());
-}
+#include "Game.hpp"
+#include "Collider.hpp"
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32U), "Breakout Clone");
+	window.setFramerateLimit(60);
 
-	RectangleEntity player_entity(sf::Vector2f(WINDOW_WIDTH / 4, 10), sf::Vector2f((WINDOW_WIDTH / 2) - 10, WINDOW_HEIGHT - 20), sf::Color::Magenta);
+	sf::Font font;
 
-	CircleEntity ball(BALL_RADIUS, sf::Vector2f((WINDOW_WIDTH / 2) - BALL_RADIUS, (WINDOW_HEIGHT / 2) - BALL_RADIUS));
-	ball.m_shape.setFillColor(sf::Color::Blue);
+	if (!font.loadFromFile("PressStart2P-Regular.ttf")) {
+		std::cout << "Could not load font from file." << std::endl;
+		exit(1);
+	}
 
-	RectangleEntity right_wall(sf::Vector2f(1, WINDOW_HEIGHT), sf::Vector2f(WINDOW_WIDTH - 1, 1), sf::Color::White);
-
-	RectangleEntity left_wall(sf::Vector2f(1, WINDOW_HEIGHT), sf::Vector2f(0, 0), sf::Color::White);
-
-	RectangleEntity ceiling(sf::Vector2f(WINDOW_WIDTH, 1), sf::Vector2f(0, 0), sf::Color::White);
-
-	std::vector<Enemy*> backline_enemies = makeEnemies(EnemyType::Strong, 5, 50);
-	std::vector<Enemy*> middleline_enemies = makeEnemies(EnemyType::Normal, 5, 70);
-	std::vector<Enemy*> frontline_enemies = makeEnemies(EnemyType::Weak, 10, 90);
+	Game *game = new Game(font);
 
 	bool lastHitRight = false;
 
@@ -56,20 +31,20 @@ int main() {
 
 		while (window.pollEvent(event)) {
 			if (event.key.code == sf::Keyboard::Key::Left) {
-				player_entity.m_direction.x = -1;
+				game->m_playerEntity.m_direction.x = -1;
 
-				if (player_entity.m_shape.getPosition().x > 0) {
-					player_entity.m_shape.move(player_entity.m_direction.x * player_entity.m_speed, 0);
+				if (game->m_playerEntity.m_shape.getPosition().x > 0) {
+					game->m_playerEntity.m_shape.move(game->m_playerEntity.m_direction.x * game->m_playerEntity.m_speed, 0);
 				}
 			}
 
 			if (event.key.code == sf::Keyboard::Key::Right) {
-				player_entity.m_direction.x = 1;
+				game->m_playerEntity.m_direction.x = 1;
 				
-				float total_movement = player_entity.m_shape.getPosition().x + player_entity.m_shape.getSize().x;
+				float total_movement = game->m_playerEntity.m_shape.getPosition().x + game->m_playerEntity.m_shape.getSize().x;
 
 				if (total_movement < WINDOW_WIDTH) {
-					player_entity.m_shape.move(player_entity.m_direction.x * player_entity.m_speed, 0);
+					game->m_playerEntity.m_shape.move(game->m_playerEntity.m_direction.x * game->m_playerEntity.m_speed, 0);
 				}
 			}
 
@@ -78,36 +53,43 @@ int main() {
 			}
 		}
 
-		if (collided(ball.m_shape, left_wall.m_shape) ||
-			collided(ball.m_shape, ceiling.m_shape) ||
-			collided(ball.m_shape, right_wall.m_shape)) {
-			ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
-		}
+		if (Collider::collided(game->m_ball.m_shape, game->m_ceiling.m_shape)) {
+			game->m_ball.m_direction = game->m_ball.m_direction.x > 0 ? Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
+				Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
+		} else if (Collider::collided(game->m_ball.m_shape, game->m_leftWall.m_shape)) {
+			game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ? Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction) : 
+				Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
+		} else if (Collider::collided(game->m_ball.m_shape, game->m_rightWall.m_shape)) {
+			game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ? Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
+				Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
+		} else if (Collider::collided(game->m_ball.m_shape, game->m_playerEntity.m_shape)) {
+			sf::Vector2f playerPos = game->m_playerEntity.m_shape.getPosition();
+			sf::Vector2f ballPos = game->m_ball.m_shape.getPosition();
 
-		if (collided(ball.m_shape, player_entity.m_shape)) {
-			sf::Vector2f playerPos = player_entity.m_shape.getPosition();
-			sf::Vector2f ballPos = ball.m_shape.getPosition();
+			float totalPlayerPosWithGlobalBounds = playerPos.x + (game->m_playerEntity.m_shape.getGlobalBounds().width / 2.0f);
+			float totalBallPosWithGlobalBounds = ballPos.x + (game->m_ball.m_shape.getGlobalBounds().width / 2.0f);
 
-			float totalPlayerPosWithGlobalBounds = playerPos.x + (player_entity.m_shape.getGlobalBounds().width / 2.0f);
+			std::cout << "Ball: " << totalBallPosWithGlobalBounds << std::endl;
+			std::cout << "Player: " << totalPlayerPosWithGlobalBounds << std::endl;
 
-			if (ballPos.x > totalPlayerPosWithGlobalBounds && lastHitRight) {
-				ball.m_direction = Geometry::getRotatedBy180Degrees(ball.m_direction);
+			if (totalBallPosWithGlobalBounds > totalPlayerPosWithGlobalBounds && lastHitRight) {
+				game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
 			}
-			else if (ballPos.x < totalPlayerPosWithGlobalBounds && !lastHitRight) {
-				ball.m_direction = Geometry::getRotatedBy180Degrees(ball.m_direction);
+			else if (totalBallPosWithGlobalBounds < totalPlayerPosWithGlobalBounds && !lastHitRight) {
+				game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
 			}
-			else if (ballPos.x > totalPlayerPosWithGlobalBounds && !lastHitRight) {
+			else if (totalBallPosWithGlobalBounds > totalPlayerPosWithGlobalBounds && !lastHitRight) {
 				lastHitRight = true;
-				ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
+				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 			}
-			else if (ballPos.x < totalPlayerPosWithGlobalBounds && lastHitRight) {
+			else if (totalBallPosWithGlobalBounds < totalPlayerPosWithGlobalBounds && lastHitRight) {
 				lastHitRight = false;
-				ball.m_direction = Geometry::getRotatedBy90DegreesCounterClockwise(ball.m_direction);
+				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
 		}
 
-		for (auto& enemy : backline_enemies) {
-			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
+		for (auto& enemy : game->m_backlineEnemies) {
+			if (enemy != nullptr && Collider::collided(game->m_ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
 				enemy->takeDamage();
 				
 				if (enemy->m_health == 0) {
@@ -115,14 +97,14 @@ int main() {
 					enemy = nullptr;
 				}
 
-				ball.m_direction = ball.m_direction.x > 0 ?
-					Geometry::getRotatedBy90DegreesCounterClockwise(ball.m_direction) :
-					Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
+				game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ?
+					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
+					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 			}
 		}
 
-		for (auto& enemy : middleline_enemies) {
-			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
+		for (auto& enemy : game->m_middlelineEnemies) {
+			if (enemy != nullptr && Collider::collided(game->m_ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
 				enemy->takeDamage();
 				
 				if (enemy->m_health == 0) {
@@ -130,14 +112,14 @@ int main() {
 					enemy = nullptr;
 				}
 
-				ball.m_direction = ball.m_direction.x > 0 ?
-					Geometry::getRotatedBy90DegreesCounterClockwise(ball.m_direction) :
-					Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
+				game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ?
+					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
+					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 			}
 		}
 
-		for (auto& enemy : frontline_enemies) {
-			if (enemy != nullptr && collided(ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
+		for (auto& enemy : game->m_frontlineEnemies) {
+			if (enemy != nullptr && Collider::collided(game->m_ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
 				enemy->takeDamage();
 
 				if (enemy->m_health == 0) {
@@ -145,32 +127,44 @@ int main() {
 					enemy = nullptr;
 				}
 				
-				ball.m_direction = ball.m_direction.x > 0 ?
-					Geometry::getRotatedBy90DegreesCounterClockwise(ball.m_direction) :
-					Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
+				game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ?
+					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
+					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 			}
 		}
 
-		ball.m_shape.move(ball.getVelocity());
+		game->m_ball.m_shape.move(game->m_ball.getVelocity());
+
+		if (game->ballIsOutOfBounds()) {
+			delete game;
+			game = new Game(font);
+			game->m_restartTextColor.a = 255;
+		}
+
+		if (game->m_restartTextColor.a > 0) {
+			game->m_restartTextColor.a -= 5;
+			game->m_restartText.setFillColor(game->m_restartTextColor);
+		}
 
 		window.clear();
 
-		window.draw(player_entity.m_shape);
-		window.draw(ball.m_shape);
+		window.draw(game->m_ball.m_shape);
+		window.draw(game->m_playerEntity.m_shape);
+		window.draw(game->m_restartText);
 
-		for (const auto& enemy : backline_enemies) {
+		for (const auto& enemy : game->m_backlineEnemies) {
 			if (enemy != nullptr) {
 				window.draw(enemy->m_rectangle_entity.m_shape);
 			}
 		}
 
-		for (const auto& enemy : middleline_enemies) {
+		for (const auto& enemy : game->m_middlelineEnemies) {
 			if (enemy != nullptr) {
 				window.draw(enemy->m_rectangle_entity.m_shape);
 			}
 		}
 
-		for (const auto& enemy : frontline_enemies) {
+		for (const auto& enemy : game->m_frontlineEnemies) {
 			if (enemy != nullptr) {
 				window.draw(enemy->m_rectangle_entity.m_shape);
 			}

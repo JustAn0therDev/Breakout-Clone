@@ -7,7 +7,7 @@ RectangleEntity::RectangleEntity(const sf::Vector2f& size, const sf::Vector2f& p
 	m_shape.setPosition(pos);
 	m_shape.setFillColor(color);
 
-	m_speed = 20.0f;
+	m_speed = 45.0f;
 }
 
 RectangleEntity::RectangleEntity() { 
