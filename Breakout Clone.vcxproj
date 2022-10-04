@@ -153,7 +153,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="RectangleEntity.cpp" />
     <ClInclude Include="RectangleEntity.hpp" />
     <ClCompile Include="VectorHelper.cpp" />

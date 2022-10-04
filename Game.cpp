@@ -17,8 +17,8 @@ Game::Game(const sf::Font& font) {
 
 	m_ceiling = RectangleEntity(sf::Vector2f(WINDOW_WIDTH, 1), sf::Vector2f(0, 0), sf::Color::White);
 
-	m_backlineEnemies = makeEnemies(EnemyType::Strong, 3, 80);
-	m_middlelineEnemies = makeEnemies(EnemyType::Normal, 4, 120);
+	m_backlineEnemies = makeEnemies(EnemyType::Strong, 5, 80);
+	m_middlelineEnemies = makeEnemies(EnemyType::Normal, 5, 120);
 	m_frontlineEnemies = makeEnemies(EnemyType::Weak, 7, 160);
 
 	m_restartTextColor = sf::Color(255, 255, 255, 0);
