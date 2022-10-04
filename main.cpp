@@ -76,32 +76,26 @@ int main() {
 				std::cout << "Last hit right and hit right" << std::endl;
 				lastHitRight = true;
 				game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
-				if (game->m_ball.m_direction.x == 0.5f && game->m_ball.m_direction.y == 0.5f) {
-					Collider::handleBallCollisionByDirection(game->m_ball);
-				}
 			}
 			else if (totalBallPosWithGlobalBounds < totalPlayerPosWithGlobalBounds && !lastHitRight) {
-				std::cout << "Last hit left and hit left" << std::endl;
 				lastHitRight = false;
 				game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
-				if (game->m_ball.m_direction.x == 0.5f && game->m_ball.m_direction.y == 0.5f) {
-					Collider::handleBallCollisionByDirection(game->m_ball);
-				}
 			}
 			else if (totalBallPosWithGlobalBounds > totalPlayerPosWithGlobalBounds && !lastHitRight) {
-				std::cout << "Last hit left and hit right" << std::endl;
 				lastHitRight = true;
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 			}
 			else if (totalBallPosWithGlobalBounds < totalPlayerPosWithGlobalBounds && lastHitRight) {
-				std::cout << "Last hit right and hit left" << std::endl;
 				lastHitRight = false;
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
 			else if (totalBallPosWithGlobalBounds == totalPlayerPosWithGlobalBounds) {
-				std::cout << "No conditions" << std::endl;
 				lastHitRight = false;
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
+			}
+
+			if (game->m_ball.m_direction.x == 0.5f && game->m_ball.m_direction.y == 0.5f) {
+				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}
 
