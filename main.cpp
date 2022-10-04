@@ -22,7 +22,7 @@ int main() {
 		exit(1);
 	}
 
-	Game *game = new Game(font);
+	Game* game = new Game(font);
 
 	bool lastHitRight = false;
 
@@ -40,7 +40,7 @@ int main() {
 
 			if (event.key.code == sf::Keyboard::Key::Right) {
 				game->m_playerEntity.m_direction.x = 1;
-				
+
 				float total_movement = game->m_playerEntity.m_shape.getPosition().x + game->m_playerEntity.m_shape.getSize().x;
 
 				if (total_movement < WINDOW_WIDTH) {
@@ -56,13 +56,16 @@ int main() {
 		if (Collider::collided(game->m_ball.m_shape, game->m_ceiling.m_shape)) {
 			game->m_ball.m_direction = game->m_ball.m_direction.x > 0 ? Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
 				Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
-		} else if (Collider::collided(game->m_ball.m_shape, game->m_leftWall.m_shape)) {
-			game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ? Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction) : 
+		}
+		else if (Collider::collided(game->m_ball.m_shape, game->m_leftWall.m_shape)) {
+			game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ? Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction) :
 				Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
-		} else if (Collider::collided(game->m_ball.m_shape, game->m_rightWall.m_shape)) {
+		}
+		else if (Collider::collided(game->m_ball.m_shape, game->m_rightWall.m_shape)) {
 			game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ? Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
 				Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
-		} else if (Collider::collided(game->m_ball.m_shape, game->m_playerEntity.m_shape)) {
+		}
+		else if (Collider::collided(game->m_ball.m_shape, game->m_playerEntity.m_shape)) {
 			sf::Vector2f playerPos = game->m_playerEntity.m_shape.getPosition();
 			sf::Vector2f ballPos = game->m_ball.m_shape.getPosition();
 
@@ -91,30 +94,30 @@ int main() {
 		for (auto& enemy : game->m_backlineEnemies) {
 			if (enemy != nullptr && Collider::collided(game->m_ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
 				enemy->takeDamage();
-				
+
 				if (enemy->m_health == 0) {
 					delete enemy;
 					enemy = nullptr;
 				}
 
-				game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ?
-					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
-					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
+				game->m_ball.m_direction = (game->m_ball.m_direction.y > 0 && game->m_ball.m_direction.x > 0) || (game->m_ball.m_direction.y < 0 && game->m_ball.m_direction.x < 0) ?
+					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction) :
+					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
 		}
 
 		for (auto& enemy : game->m_middlelineEnemies) {
 			if (enemy != nullptr && Collider::collided(game->m_ball.m_shape, enemy->m_rectangle_entity.m_shape)) {
 				enemy->takeDamage();
-				
+
 				if (enemy->m_health == 0) {
 					delete enemy;
 					enemy = nullptr;
 				}
 
-				game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ?
-					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
-					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
+				game->m_ball.m_direction = (game->m_ball.m_direction.y > 0 && game->m_ball.m_direction.x > 0) || (game->m_ball.m_direction.y < 0 && game->m_ball.m_direction.x < 0) ?
+					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction) :
+					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
 		}
 
@@ -126,10 +129,10 @@ int main() {
 					delete enemy;
 					enemy = nullptr;
 				}
-				
-				game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ?
-					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
-					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
+
+				game->m_ball.m_direction = (game->m_ball.m_direction.y > 0 && game->m_ball.m_direction.x > 0) || (game->m_ball.m_direction.y < 0 && game->m_ball.m_direction.x < 0) ?
+					Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction) :
+					Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
 		}
 
@@ -139,6 +142,7 @@ int main() {
 			delete game;
 			game = new Game(font);
 			game->m_restartTextColor.a = 255;
+			lastHitRight = false; // reset the player collision direction flag
 		}
 
 		if (game->m_restartTextColor.a > 0) {
