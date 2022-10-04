@@ -7,10 +7,7 @@
 #include "Enemy.hpp"
 #include "EnemyType.hpp"
 #include "VectorHelper.hpp"
-
-static const int WINDOW_HEIGHT = 1080;
-static const int WINDOW_WIDTH = 1920;
-static const float BALL_RADIUS = 10.0f;
+#include "Constants.hpp"
 
 std::vector<Enemy*> makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos) {
 	std::vector<Enemy*> enemies;
@@ -52,6 +49,8 @@ int main() {
 	std::vector<Enemy*> middleline_enemies = makeEnemies(EnemyType::Normal, 5, 70);
 	std::vector<Enemy*> frontline_enemies = makeEnemies(EnemyType::Weak, 10, 90);
 
+	bool lastHitRight = false;
+
 	while (window.isOpen()) {
 		sf::Event event;
 
@@ -86,9 +85,25 @@ int main() {
 		}
 
 		if (collided(ball.m_shape, player_entity.m_shape)) {
-			ball.m_direction = player_entity.m_direction.x == -1 ? 
-				Geometry::getRotatedBy90DegreesClockwise(ball.m_direction) : 
-				Geometry::getRotatedBy90DegreesCounterClockwise(ball.m_direction);
+			sf::Vector2f playerPos = player_entity.m_shape.getPosition();
+			sf::Vector2f ballPos = ball.m_shape.getPosition();
+
+			float totalPlayerPosWithGlobalBounds = playerPos.x + (player_entity.m_shape.getGlobalBounds().width / 2.0f);
+
+			if (ballPos.x > totalPlayerPosWithGlobalBounds && lastHitRight) {
+				ball.m_direction = Geometry::getRotatedBy180Degrees(ball.m_direction);
+			}
+			else if (ballPos.x < totalPlayerPosWithGlobalBounds && !lastHitRight) {
+				ball.m_direction = Geometry::getRotatedBy180Degrees(ball.m_direction);
+			}
+			else if (ballPos.x > totalPlayerPosWithGlobalBounds && !lastHitRight) {
+				lastHitRight = true;
+				ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(ball.m_direction);
+			}
+			else if (ballPos.x < totalPlayerPosWithGlobalBounds && lastHitRight) {
+				lastHitRight = false;
+				ball.m_direction = Geometry::getRotatedBy90DegreesCounterClockwise(ball.m_direction);
+			}
 		}
 
 		for (auto& enemy : backline_enemies) {
