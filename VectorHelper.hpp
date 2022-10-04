@@ -4,5 +4,5 @@
 
 class VectorHelper {
 public:
-	friend std::ostream& operator<<(std::ostream& stream, const sf::Vector2f& vector);
+	friend std::ostream& operator<<(std::ostream stream, const sf::Vector2f vector);
 };

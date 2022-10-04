@@ -2,7 +2,8 @@
 #include "Geometry.hpp"
 
 class VectorHelper {
-	friend std::ostream& operator<<(std::ostream& stream, const sf::Vector2f& vector) {
+public:
+	friend std::ostream& operator<<(std::ostream stream, const sf::Vector2f vector) {
 		return stream << vector.x << ", " << vector.y;
 	}
 };
