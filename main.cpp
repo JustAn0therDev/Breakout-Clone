@@ -24,8 +24,6 @@ int main() {
 
 	Game* game = new Game(font);
 
-	bool lastHitRight = false;
-
 	while (window.isOpen()) {
 		sf::Event event;
 
@@ -76,20 +74,12 @@ int main() {
 			float totalPlayerPosWithGlobalBounds = playerPos.x + (game->m_playerEntity.m_shape.getGlobalBounds().width / 2.0f);
 			float totalBallPosWithGlobalBounds = ballPos.x + (game->m_ball.m_shape.getGlobalBounds().width / 2.0f);
 
-			if (totalBallPosWithGlobalBounds > totalPlayerPosWithGlobalBounds && lastHitRight) {
-				lastHitRight = true;
-				game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
-			}
-			else if (totalBallPosWithGlobalBounds < totalPlayerPosWithGlobalBounds && !lastHitRight) {
-				lastHitRight = false;
-				game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
-			}
-			else if (totalBallPosWithGlobalBounds > totalPlayerPosWithGlobalBounds && !lastHitRight) {
-				lastHitRight = true;
+			if (totalBallPosWithGlobalBounds >= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x < 0 || 
+				(totalBallPosWithGlobalBounds >= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x > 0)) {
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 			}
-			else if (totalBallPosWithGlobalBounds < totalPlayerPosWithGlobalBounds && lastHitRight) {
-				lastHitRight = false;
+			else if (totalBallPosWithGlobalBounds <= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x < 0 || 
+				(totalBallPosWithGlobalBounds <= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x > 0)) {
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
 
@@ -143,7 +133,6 @@ int main() {
 			delete game;
 			game = new Game(font);
 			game->m_textColor.a = 255;
-			lastHitRight = false; // reset the player collision direction flag
 		}
 
 		if (game->m_textColor.a > 0) {
@@ -183,7 +172,6 @@ int main() {
 					window.close();
 					break;
 				}
-				
 				continue;
 			}
 		}
