@@ -53,6 +53,10 @@ int main() {
 			}
 		}
 
+		if (Collider::collidedWithTopCorners(game->m_ball.m_shape)) {
+			game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
+		}
+
 		if (Collider::collided(game->m_ball.m_shape, game->m_ceiling.m_shape)) {
 			game->m_ball.m_direction = game->m_ball.m_direction.x > 0 ? Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
 				Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
