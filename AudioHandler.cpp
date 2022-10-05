@@ -23,6 +23,7 @@ AudioHandler::AudioHandler() {
 	}
 
 	m_GameOverTheme.setBuffer(m_GameOverThemeBuffer);
+	m_GameOverTheme.setVolume(20);
 }
 
 void AudioHandler::playBubblePop() {
