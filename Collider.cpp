@@ -3,6 +3,7 @@
 #include "Geometry.hpp"
 #include "CircleEntity.hpp"
 #include "Constants.hpp"
+#include <SFML/Audio.hpp>
 
 bool Collider::collided(const sf::Shape& first_obj, const sf::Shape& second_obj) {
 	return first_obj.getGlobalBounds().intersects(second_obj.getGlobalBounds());

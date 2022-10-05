@@ -5,6 +5,8 @@
 #include <SFML/Graphics.hpp>
 
 class Game {
+private:
+	std::vector<Enemy*> makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos);
 public:
 	RectangleEntity m_ceiling;
 	RectangleEntity m_rightWall;
@@ -22,7 +24,6 @@ public:
 
 	Game(const sf::Font& font);
 
-	std::vector<Enemy*> makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos);
 	bool ballIsOutOfBounds();
 	bool isOver();
 };

@@ -5,6 +5,26 @@
 #include "Constants.hpp"
 #include "EnemyType.hpp"
 
+std::vector<Enemy*> Game::makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos) {
+	std::vector<Enemy*> enemies;
+	enemies.reserve(static_cast<int>(amount));
+
+	float size = (WINDOW_WIDTH / amount) - 10 * 2;
+
+	float space_between = (WINDOW_WIDTH - (size * amount)) / (amount + 1);
+
+	float pos = space_between;
+
+	for (int i = 0; i < static_cast<int>(amount); i++) {
+		Enemy* enemy = new Enemy(enemy_type, sf::Vector2f(size, 30), sf::Vector2f(pos, y_pos));
+		enemy->m_rectangle_entity.m_direction.x = 1;
+		enemies.emplace_back(enemy);
+		pos += size + space_between;
+	}
+
+	return enemies;
+}
+
 Game::Game(const sf::Font& font) {
 	m_playerEntity = RectangleEntity(sf::Vector2f(WINDOW_WIDTH / 4, 10), sf::Vector2f((WINDOW_WIDTH / 2) + (WINDOW_WIDTH / 4), WINDOW_HEIGHT - 20), sf::Color::Magenta);
 
@@ -34,26 +54,6 @@ Game::Game(const sf::Font& font) {
 	m_gameOverText.setFillColor(sf::Color::White);
 	m_gameOverText.setString("you win!");
 	m_gameOverText.setPosition((WINDOW_WIDTH / 2.0f) - m_restartText.getCharacterSize() * 4, WINDOW_HEIGHT / 2.0f);
-}
-
-std::vector<Enemy*> Game::makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos) {
-	std::vector<Enemy*> enemies;
-	enemies.reserve(static_cast<int>(amount));
-
-	float size = (WINDOW_WIDTH / amount) - 10 * 2;
-
-	float space_between = (WINDOW_WIDTH - (size * amount)) / (amount + 1);
-
-	float pos = space_between;
-
-	for (int i = 0; i < static_cast<int>(amount); i++) {
-		Enemy* enemy = new Enemy(enemy_type, sf::Vector2f(size, 20), sf::Vector2f(pos, y_pos));
-		enemy->m_rectangle_entity.m_direction.x = 1;
-		enemies.emplace_back(enemy);
-		pos += size + space_between;
-	}
-
-	return enemies;
 }
 
 bool Game::ballIsOutOfBounds() {

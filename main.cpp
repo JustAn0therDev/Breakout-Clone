@@ -11,6 +11,8 @@
 #include "Game.hpp"
 #include "Collider.hpp"
 #include <Windows.h>
+#include <SFML/Audio.hpp>
+#include "AudioHandler.hpp"
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32U), "Breakout Clone");
@@ -27,6 +29,7 @@ int main() {
 	}
 
 	Game* game = new Game(font);
+	AudioHandler audioHandler;
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -54,22 +57,27 @@ int main() {
 		}
 
 		if (Collider::collidedWithTopCorners(game->m_ball.m_shape)) {
+			audioHandler.playBoop();
 			game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
 		}
 
 		if (Collider::collided(game->m_ball.m_shape, game->m_ceiling.m_shape)) {
+			audioHandler.playBoop();
 			game->m_ball.m_direction = game->m_ball.m_direction.x > 0 ? Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
 				Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 		}
 		else if (Collider::collided(game->m_ball.m_shape, game->m_leftWall.m_shape)) {
+			audioHandler.playBoop();
 			game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ? Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction) :
 				Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 		}
 		else if (Collider::collided(game->m_ball.m_shape, game->m_rightWall.m_shape)) {
+			audioHandler.playBoop();
 			game->m_ball.m_direction = game->m_ball.m_direction.y > 0 ? Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction) :
 				Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 		}
 		else if (Collider::collided(game->m_ball.m_shape, game->m_playerEntity.m_shape)) {
+			audioHandler.playBoop();
 			sf::Vector2f playerPos = game->m_playerEntity.m_shape.getPosition();
 			sf::Vector2f ballPos = game->m_ball.m_shape.getPosition();
 
@@ -85,7 +93,8 @@ int main() {
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
 
-			if ((game->m_ball.m_direction.x == -0.5f && game->m_ball.m_direction.y == 0.5f) || (game->m_ball.m_direction.x == 0.5f && game->m_ball.m_direction.y == 0.5f)) {
+			if ((game->m_ball.m_direction.x == -0.5f && game->m_ball.m_direction.y == 0.5f) || 
+				(game->m_ball.m_direction.x == 0.5f && game->m_ball.m_direction.y == 0.5f)) {
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}
@@ -95,10 +104,12 @@ int main() {
 				enemy->takeDamage();
 
 				if (enemy->m_health == 0) {
+					audioHandler.playBubblePop();
 					delete enemy;
 					enemy = nullptr;
 				}
 
+				audioHandler.playBoop();
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}
@@ -108,10 +119,12 @@ int main() {
 				enemy->takeDamage();
 
 				if (enemy->m_health == 0) {
+					audioHandler.playBubblePop();
 					delete enemy;
 					enemy = nullptr;
 				}
 
+				audioHandler.playBoop();
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}
@@ -121,10 +134,12 @@ int main() {
 				enemy->takeDamage();
 
 				if (enemy->m_health == 0) {
+					audioHandler.playBubblePop();
 					delete enemy;
 					enemy = nullptr;
 				}
 
+				audioHandler.playBoop();
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}
@@ -167,6 +182,7 @@ int main() {
 		}
 
 		if (game->isOver()) {
+			audioHandler.playGameOverTheme();
 			window.draw(game->m_gameOverText);
 			window.display();
 			while (window.waitEvent(event)) {

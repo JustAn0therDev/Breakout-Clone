@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "CircleEntity.hpp"
+#include <SFML/Audio.hpp>
 
 class Collider {
 public:
