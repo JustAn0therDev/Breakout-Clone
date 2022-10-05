@@ -33,7 +33,7 @@ Game::Game(const sf::Font& font) {
 	m_gameOverText.setCharacterSize(24);
 	m_gameOverText.setFillColor(sf::Color::White);
 	m_gameOverText.setString("you win!");
-	m_gameOverText.setPosition((WINDOW_WIDTH / 2.0f) - m_restartText.getCharacterSize() * 3, WINDOW_HEIGHT / 2.0f);
+	m_gameOverText.setPosition((WINDOW_WIDTH / 2.0f) - m_restartText.getCharacterSize() * 4, WINDOW_HEIGHT / 2.0f);
 }
 
 std::vector<Enemy*> Game::makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos) {

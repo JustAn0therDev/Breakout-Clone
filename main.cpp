@@ -31,7 +31,7 @@ int main() {
 			if (event.key.code == sf::Keyboard::Key::Left) {
 				game->m_playerEntity.m_direction.x = -1;
 
-				if (game->m_playerEntity.m_shape.getPosition().x > 0) {
+				if (game->m_playerEntity.m_shape.getPosition().x > -(game->m_playerEntity.m_shape.getGlobalBounds().width / 2.0f)) {
 					game->m_playerEntity.m_shape.move(game->m_playerEntity.m_direction.x * game->m_playerEntity.m_speed, 0);
 				}
 			}
@@ -39,9 +39,7 @@ int main() {
 			if (event.key.code == sf::Keyboard::Key::Right) {
 				game->m_playerEntity.m_direction.x = 1;
 
-				float total_movement = game->m_playerEntity.m_shape.getPosition().x + game->m_playerEntity.m_shape.getSize().x;
-
-				if (total_movement < WINDOW_WIDTH) {
+				if (game->m_playerEntity.m_shape.getPosition().x + (game->m_playerEntity.m_shape.getSize().x / 2.0f) < WINDOW_WIDTH) {
 					game->m_playerEntity.m_shape.move(game->m_playerEntity.m_direction.x * game->m_playerEntity.m_speed, 0);
 				}
 			}
