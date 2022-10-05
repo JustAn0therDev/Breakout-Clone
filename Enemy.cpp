@@ -4,13 +4,13 @@
 
 void Enemy::updateColorByHealth() {
 	if (m_health == (int)EnemyType::Weak) {
-		m_color = sf::Color::White;
-	}
-	else if (m_health == (int)EnemyType::Normal) {
 		m_color = sf::Color::Blue;
 	}
-	else {
+	else if (m_health == (int)EnemyType::Normal) {
 		m_color = sf::Color::Red;
+	}
+	else {
+		m_color = sf::Color(255, 0, 255);
 	}
 
 	m_rectangle_entity.m_shape.setFillColor(m_color);

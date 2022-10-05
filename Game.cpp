@@ -26,10 +26,10 @@ std::vector<Enemy*> Game::makeEnemies(const EnemyType enemy_type, const float am
 }
 
 Game::Game(const sf::Font& font) {
-	m_playerEntity = RectangleEntity(sf::Vector2f(WINDOW_WIDTH / 4, 10), sf::Vector2f((WINDOW_WIDTH / 2) + (WINDOW_WIDTH / 4), WINDOW_HEIGHT - 20), sf::Color::Magenta);
+	m_playerEntity = RectangleEntity(sf::Vector2f(WINDOW_WIDTH / 4, 10), sf::Vector2f((WINDOW_WIDTH / 2) + (WINDOW_WIDTH / 4), WINDOW_HEIGHT - 20), sf::Color::White);
 
 	m_ball = CircleEntity(BALL_RADIUS, sf::Vector2f((WINDOW_WIDTH / 2) - BALL_RADIUS, (WINDOW_HEIGHT / 2) - BALL_RADIUS));
-	m_ball.m_shape.setFillColor(sf::Color::Blue);
+	m_ball.m_shape.setFillColor(sf::Color::White);
 
 	m_rightWall = RectangleEntity(sf::Vector2f(1, WINDOW_HEIGHT), sf::Vector2f(WINDOW_WIDTH - 1, 1), sf::Color::White);
 
@@ -39,7 +39,7 @@ Game::Game(const sf::Font& font) {
 
 	m_backlineEnemies = makeEnemies(EnemyType::Strong, 5, 80);
 	m_middlelineEnemies = makeEnemies(EnemyType::Normal, 5, 120);
-	m_frontlineEnemies = makeEnemies(EnemyType::Weak, 7, 160);
+	m_frontlineEnemies = makeEnemies(EnemyType::Weak, 5, 160);
 
 	m_textColor = sf::Color(255, 255, 255, 0);
 
