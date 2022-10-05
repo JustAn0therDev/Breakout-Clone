@@ -21,13 +21,19 @@ Game::Game(const sf::Font& font) {
 	m_middlelineEnemies = makeEnemies(EnemyType::Normal, 5, 120);
 	m_frontlineEnemies = makeEnemies(EnemyType::Weak, 7, 160);
 
-	m_restartTextColor = sf::Color(255, 255, 255, 0);
+	m_textColor = sf::Color(255, 255, 255, 0);
 
 	m_restartText.setFont(font);
 	m_restartText.setCharacterSize(24);
-	m_restartText.setFillColor(m_restartTextColor);
+	m_restartText.setFillColor(m_textColor);
 	m_restartText.setString("restarting");
 	m_restartText.setPosition((WINDOW_WIDTH / 2.0f) - m_restartText.getCharacterSize() * 5, WINDOW_HEIGHT / 2.0f);
+
+	m_gameOverText.setFont(font);
+	m_gameOverText.setCharacterSize(24);
+	m_gameOverText.setFillColor(sf::Color::White);
+	m_gameOverText.setString("you win!");
+	m_gameOverText.setPosition((WINDOW_WIDTH / 2.0f) - m_restartText.getCharacterSize() * 3, WINDOW_HEIGHT / 2.0f);
 }
 
 std::vector<Enemy*> Game::makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos) {
@@ -52,4 +58,31 @@ std::vector<Enemy*> Game::makeEnemies(const EnemyType enemy_type, const float am
 
 bool Game::ballIsOutOfBounds() {
 	return m_ball.m_shape.getPosition().y + m_ball.m_shape.getGlobalBounds().height > WINDOW_HEIGHT;
+}
+
+bool Game::isOver() {
+	bool isOver = true;
+
+	for (const auto& ptr : m_backlineEnemies) {
+		if (ptr != nullptr) {
+			isOver = false;
+			break;
+		}
+	}
+
+	for (const auto& ptr : m_middlelineEnemies) {
+		if (ptr != nullptr) {
+			isOver = false;
+			break;
+		}
+	}
+
+	for (const auto& ptr : m_frontlineEnemies) {
+		if (ptr != nullptr) {
+			isOver = false;
+			break;
+		}
+	}
+
+	return isOver;
 }

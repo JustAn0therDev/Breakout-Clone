@@ -17,10 +17,12 @@ public:
 	std::vector<Enemy*> m_backlineEnemies;
 
 	sf::Text m_restartText;
-	sf::Color m_restartTextColor;
+	sf::Text m_gameOverText;
+	sf::Color m_textColor;
 
 	Game(const sf::Font& font);
 
 	std::vector<Enemy*> makeEnemies(const EnemyType enemy_type, const float amount, const float y_pos);
 	bool ballIsOutOfBounds();
+	bool isOver();
 };

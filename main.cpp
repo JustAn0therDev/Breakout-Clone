@@ -73,7 +73,6 @@ int main() {
 			float totalBallPosWithGlobalBounds = ballPos.x + (game->m_ball.m_shape.getGlobalBounds().width / 2.0f);
 
 			if (totalBallPosWithGlobalBounds > totalPlayerPosWithGlobalBounds && lastHitRight) {
-				std::cout << "Last hit right and hit right" << std::endl;
 				lastHitRight = true;
 				game->m_ball.m_direction = Geometry::getRotatedBy180Degrees(game->m_ball.m_direction);
 			}
@@ -89,12 +88,8 @@ int main() {
 				lastHitRight = false;
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
-			else if (totalBallPosWithGlobalBounds == totalPlayerPosWithGlobalBounds) {
-				lastHitRight = false;
-				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
-			}
 
-			if (game->m_ball.m_direction.x == 0.5f && game->m_ball.m_direction.y == 0.5f) {
+			if ((game->m_ball.m_direction.x == -0.5f && game->m_ball.m_direction.y == 0.5f) || (game->m_ball.m_direction.x == 0.5f && game->m_ball.m_direction.y == 0.5f)) {
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}
@@ -143,13 +138,13 @@ int main() {
 		if (game->ballIsOutOfBounds()) {
 			delete game;
 			game = new Game(font);
-			game->m_restartTextColor.a = 255;
+			game->m_textColor.a = 255;
 			lastHitRight = false; // reset the player collision direction flag
 		}
 
-		if (game->m_restartTextColor.a > 0) {
-			game->m_restartTextColor.a -= 5;
-			game->m_restartText.setFillColor(game->m_restartTextColor);
+		if (game->m_textColor.a > 0) {
+			game->m_textColor.a -= 5;
+			game->m_restartText.setFillColor(game->m_textColor);
 		}
 
 		window.clear();
@@ -173,6 +168,19 @@ int main() {
 		for (const auto& enemy : game->m_frontlineEnemies) {
 			if (enemy != nullptr) {
 				window.draw(enemy->m_rectangle_entity.m_shape);
+			}
+		}
+
+		if (game->isOver()) {
+			window.draw(game->m_gameOverText);
+			window.display();
+			while (window.waitEvent(event)) {
+				if (event.key.code == sf::Keyboard::Key::Enter || event.type == sf::Event::Closed) {
+					window.close();
+					break;
+				}
+				
+				continue;
 			}
 		}
 
