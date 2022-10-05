@@ -10,14 +10,18 @@
 #include "Constants.hpp"
 #include "Game.hpp"
 #include "Collider.hpp"
+#include <Windows.h>
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32U), "Breakout Clone");
 	window.setFramerateLimit(60);
 
+	SetForegroundWindow(window.getSystemHandle());
+	ShowWindow(window.getSystemHandle(), SW_MAXIMIZE);
+
 	sf::Font font;
 
-	if (!font.loadFromFile("PressStart2P-Regular.ttf")) {
+	if (!font.loadFromFile("Assets/Fonts/PressStart2P-Regular.ttf")) {
 		std::cout << "Could not load font from file." << std::endl;
 		exit(1);
 	}
