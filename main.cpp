@@ -107,9 +107,11 @@ int main() {
 					audioHandler.playBubblePop();
 					delete enemy;
 					enemy = nullptr;
+					Collider::handleBallCollisionByDirection(game->m_ball);
+					break;
 				}
 
-				audioHandler.playBoop();
+				audioHandler.playThonk();
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}
@@ -122,9 +124,11 @@ int main() {
 					audioHandler.playBubblePop();
 					delete enemy;
 					enemy = nullptr;
+					Collider::handleBallCollisionByDirection(game->m_ball);
+					break;
 				}
 
-				audioHandler.playBoop();
+				audioHandler.playThonk();
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}
@@ -137,9 +141,11 @@ int main() {
 					audioHandler.playBubblePop();
 					delete enemy;
 					enemy = nullptr;
+					Collider::handleBallCollisionByDirection(game->m_ball);
+					break;
 				}
 
-				audioHandler.playBoop();
+				audioHandler.playThonk();
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
 		}

@@ -24,6 +24,14 @@ AudioHandler::AudioHandler() {
 
 	m_GameOverTheme.setBuffer(m_GameOverThemeBuffer);
 	m_GameOverTheme.setVolume(20);
+
+	if (!m_ThonkBuffer.loadFromFile("Assets/Audio/Thonk.ogg")) {
+		std::cout << "Could not load audio from file." << std::endl;
+		exit(1);
+	}
+
+	m_Thonk.setBuffer(m_ThonkBuffer);
+	m_Thonk.setVolume(30);
 }
 
 void AudioHandler::playBubblePop() {
@@ -51,4 +59,13 @@ void AudioHandler::playGameOverTheme() {
 
 	m_GameOverTheme.setPlayingOffset(sf::seconds(0.2f));
 	m_GameOverTheme.play();
+}
+
+void AudioHandler::playThonk() {
+	if (m_Thonk.getStatus() == sf::SoundSource::Playing) {
+		m_Thonk.stop();
+	}
+
+	m_Thonk.setPlayingOffset(sf::seconds(0.6f));
+	m_Thonk.play();
 }
