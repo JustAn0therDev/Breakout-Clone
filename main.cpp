@@ -31,30 +31,30 @@ int main() {
 	Game* game = new Game(font);
 	AudioHandler audioHandler;
 
+	game->m_playerEntity.m_direction = sf::Vector2f(0, 0);
+
 	while (window.isOpen()) {
 		sf::Event event;
+		game->m_playerEntity.m_direction.x = 0;
 
 		while (window.pollEvent(event)) {
-			if (event.key.code == sf::Keyboard::Key::Left) {
-				game->m_playerEntity.m_direction.x = -1;
-
-				if (game->m_playerEntity.m_shape.getPosition().x > -(game->m_playerEntity.m_shape.getGlobalBounds().width / 2.0f)) {
-					game->m_playerEntity.m_shape.move(game->m_playerEntity.m_direction.x * game->m_playerEntity.m_speed, 0);
-				}
-			}
-
-			if (event.key.code == sf::Keyboard::Key::Right) {
-				game->m_playerEntity.m_direction.x = 1;
-
-				if (game->m_playerEntity.m_shape.getPosition().x + (game->m_playerEntity.m_shape.getSize().x / 2.0f) < WINDOW_WIDTH) {
-					game->m_playerEntity.m_shape.move(game->m_playerEntity.m_direction.x * game->m_playerEntity.m_speed, 0);
-				}
-			}
-
 			if (event.key.code == sf::Keyboard::Key::Escape || event.type == sf::Event::Closed) {
 				window.close();
 			}
 		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+			if (game->m_playerEntity.m_shape.getPosition().x > -(game->m_playerEntity.m_shape.getGlobalBounds().width / 2.0f)) {
+				game->m_playerEntity.m_direction.x = -1;
+			}
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+			if (game->m_playerEntity.m_shape.getPosition().x + (game->m_playerEntity.m_shape.getGlobalBounds().width / 2.0f) < WINDOW_WIDTH) {
+				game->m_playerEntity.m_direction.x = 1;
+			}
+		}
+
+		game->m_playerEntity.m_shape.move(game->m_playerEntity.m_speed * game->m_playerEntity.m_direction.x, 0);
 
 		if (Collider::collidedWithTopCorners(game->m_ball.m_shape)) {
 			audioHandler.playBoop();
@@ -84,16 +84,16 @@ int main() {
 			float totalPlayerPosWithGlobalBounds = playerPos.x + (game->m_playerEntity.m_shape.getGlobalBounds().width / 2.0f);
 			float totalBallPosWithGlobalBounds = ballPos.x + (game->m_ball.m_shape.getGlobalBounds().width / 2.0f);
 
-			if (totalBallPosWithGlobalBounds >= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x < 0 || 
+			if (totalBallPosWithGlobalBounds >= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x < 0 ||
 				(totalBallPosWithGlobalBounds >= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x > 0)) {
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesClockwise(game->m_ball.m_direction);
 			}
-			else if (totalBallPosWithGlobalBounds <= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x < 0 || 
+			else if (totalBallPosWithGlobalBounds <= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x < 0 ||
 				(totalBallPosWithGlobalBounds <= totalPlayerPosWithGlobalBounds && game->m_ball.m_direction.x > 0)) {
 				game->m_ball.m_direction = Geometry::getRotatedBy90DegreesCounterClockwise(game->m_ball.m_direction);
 			}
 
-			if ((game->m_ball.m_direction.x == -0.5f && game->m_ball.m_direction.y == 0.5f) || 
+			if ((game->m_ball.m_direction.x == -0.5f && game->m_ball.m_direction.y == 0.5f) ||
 				(game->m_ball.m_direction.x == 0.5f && game->m_ball.m_direction.y == 0.5f)) {
 				Collider::handleBallCollisionByDirection(game->m_ball);
 			}
